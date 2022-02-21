@@ -36,13 +36,16 @@ def inspect_static_attributes(
     class_type_fqn: str,
     root_module_name: str,
     domain_items_by_fqn: Dict[str, UmlItem],
-    domain_relations: List[UmlRelation]
+    domain_relations: List[UmlRelation],
+    methods: List[str]
 ) -> List[UmlAttribute]:
+
     definition_attrs: List[UmlAttribute] = []
     uml_class = UmlClass(
         name=class_type.__name__,
         fqn=class_type_fqn,
-        attributes=definition_attrs
+        attributes=definition_attrs,
+        methods=methods
     )
     domain_items_by_fqn[class_type_fqn] = uml_class
     # inspect_domain_definition(class_type)
@@ -88,11 +91,13 @@ def inspect_class_type(
     class_type_fqn: str,
     root_module_name: str,
     domain_items_by_fqn: Dict[str, UmlItem],
-    domain_relations: List[UmlRelation]
+    domain_relations: List[UmlRelation],
+    methods: List[str]
 ):
     attributes = inspect_static_attributes(
         class_type, class_type_fqn, root_module_name,
-        domain_items_by_fqn, domain_relations
+        domain_items_by_fqn, domain_relations,
+        methods=methods
     )
     instance_attributes, compositions = parse_class_constructor(class_type, class_type_fqn, root_module_name)
     attributes.extend(instance_attributes)

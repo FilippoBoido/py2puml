@@ -21,4 +21,7 @@ def py2puml(domain_path: str, domain_module: str) -> Iterable[str]:
                 domain_items_by_fqn,
                 domain_relations
             )
-    return to_puml_content(domain_items_by_fqn.values(), domain_relations)
+    content = to_puml_content(domain_items_by_fqn.values(), domain_relations)
+    print(type(content))
+
+    return content

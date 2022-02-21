@@ -1,4 +1,5 @@
-
+import inspect
+import types
 from typing import Dict, Iterable, List, Type
 from types import ModuleType
 
@@ -11,6 +12,7 @@ from py2puml.domain.umlrelation import UmlRelation
 from py2puml.inspection.inspectclass import inspect_dataclass_type, inspect_class_type
 from py2puml.inspection.inspectenum import inspect_enum_type
 from py2puml.inspection.inspectnamedtuple import inspect_namedtuple_type
+
 
 def filter_domain_definitions(module: ModuleType, root_module_name: str) -> Iterable[Type]:
     for definition_key in dir(module):
@@ -25,14 +27,29 @@ def filter_domain_definitions(module: ModuleType, root_module_name: str) -> Iter
             if definition_module_member is not None:
                 yield definition_type
 
+
 def inspect_domain_definition(
-    definition_type: Type,
-    root_module_name: str,
-    domain_items_by_fqn: Dict[str, UmlItem],
-    domain_relations: List[UmlRelation]
+        definition_type: Type,
+        root_module_name: str,
+        domain_items_by_fqn: Dict[str, UmlItem],
+        domain_relations: List[UmlRelation]
 ):
     definition_type_fqn = f'{definition_type.__module__}.{definition_type.__name__}'
     if definition_type_fqn not in domain_items_by_fqn:
+        # print("Definition type:", definition_type)
+        # print("Class info:", dir(definition_type))
+        # print("Inspect:", inspect.getmembers(definition_type))
+        inspection = inspect.getmembers(definition_type)
+        methods = []
+        for member_name, member_data in inspection:
+            try:
+                if type(member_data) is types.FunctionType \
+                        and not member_name.startswith('__')\
+                        and not member_name.endswith('__'):
+                    print(member_name+'()')
+                    methods.append('  ' + member_name + '()\n')
+            except TypeError:
+                pass
         if issubclass(definition_type, Enum):
             inspect_enum_type(definition_type, definition_type_fqn, domain_items_by_fqn)
         elif getattr(definition_type, '_fields', None) is not None:
@@ -45,14 +62,15 @@ def inspect_domain_definition(
         else:
             inspect_class_type(
                 definition_type, definition_type_fqn,
-                root_module_name, domain_items_by_fqn, domain_relations
+                root_module_name, domain_items_by_fqn, domain_relations, methods
             )
 
+
 def inspect_module(
-    domain_item_module: ModuleType,
-    root_module_name: str,
-    domain_items_by_fqn: Dict[str, UmlItem],
-    domain_relations: List[UmlRelation]
+        domain_item_module: ModuleType,
+        root_module_name: str,
+        domain_items_by_fqn: Dict[str, UmlItem],
+        domain_relations: List[UmlRelation]
 ):
     # processes only the definitions declared or imported within the given root module
     for definition_type in filter_domain_definitions(domain_item_module, root_module_name):
