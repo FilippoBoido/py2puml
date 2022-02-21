@@ -12,11 +12,13 @@ from py2puml.utils import inspect_domain_definition
 
 CONCRETE_TYPE_PATTERN = compile("^<(?:class|enum) '([\\.|\\w]+)'>$")
 
+
 def get_type_name(type: Type, root_module_name: str):
     if type.__module__.startswith(root_module_name):
         return type.__name__
     else:
         return f'{type.__module__}.{type.__name__}'
+
 
 def handle_inheritance_relation(
     class_type: Type,
@@ -30,6 +32,7 @@ def handle_inheritance_relation(
             domain_relations.append(
                 UmlRelation(base_type_fqn, class_fqn, RelType.INHERITANCE)
             )
+
 
 def inspect_static_attributes(
     class_type: Type,

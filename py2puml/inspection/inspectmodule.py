@@ -36,9 +36,7 @@ def inspect_domain_definition(
 ):
     definition_type_fqn = f'{definition_type.__module__}.{definition_type.__name__}'
     if definition_type_fqn not in domain_items_by_fqn:
-        # print("Definition type:", definition_type)
-        # print("Class info:", dir(definition_type))
-        # print("Inspect:", inspect.getmembers(definition_type))
+
         inspection = inspect.getmembers(definition_type)
         methods = []
         for member_name, member_data in inspection:
@@ -46,7 +44,6 @@ def inspect_domain_definition(
                 if type(member_data) is types.FunctionType \
                         and not member_name.startswith('__')\
                         and not member_name.endswith('__'):
-                    print(member_name+'()')
                     methods.append('  ' + member_name + '()\n')
             except TypeError:
                 pass
