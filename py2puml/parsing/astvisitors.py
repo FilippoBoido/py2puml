@@ -67,7 +67,7 @@ class AssignedVariablesCollector(NodeVisitor):
 
 class ConstructorVisitor(NodeVisitor):
     '''Identifies the attributes (and infer their type) assigned to self in the body of a constructor method'''
-    def __init__(self, constructor_source: str, class_name: str, root_fqn: str, module_resolver: ModuleResolver, *args, **kwargs):
+    def __init__(self, constructor_source: str, class_name: str, root_fqn: str, module_resolver: ModuleResolver, hide_private_attributes, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.constructor_source = constructor_source
         self.class_fqn: str = f'{module_resolver.module.__name__}.{class_name}'
@@ -77,6 +77,7 @@ class ConstructorVisitor(NodeVisitor):
         self.variables_namespace: List[Variable] = []
         self.uml_attributes: List[UmlAttribute] = []
         self.uml_relations_by_target_fqn: Dict[str, UmlRelation] = {}
+        self.hide_private_attributes = hide_private_attributes
 
     def extend_relations(self, target_fqns: List[str]):
         self.uml_relations_by_target_fqn.update({
@@ -148,6 +149,8 @@ class ConstructorVisitor(NodeVisitor):
 
             else:
                 for variable in variables_collector.self_attributes:
+                    if self.hide_private_attributes and variable.id.startswith('_'):
+                        continue
                     short_type, full_namespaced_definitions = self.derive_type_annotation_details(variable.type_expr)
                     self.uml_attributes.append(UmlAttribute(variable.id, short_type, static=False))
                     self.extend_relations(full_namespaced_definitions)

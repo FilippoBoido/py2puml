@@ -18,3 +18,4 @@ def inspect_namedtuple_type(
             for tuple_field in namedtuple_type._fields
         ]
     )
+    print(domain_items_by_fqn[namedtuple_type_fqn])

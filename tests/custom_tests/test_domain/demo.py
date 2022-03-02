@@ -89,6 +89,25 @@ class Car:
     def stop(self):
         pass
 
+class SpecialCar(Car):
+
+    def super_speed(self):
+        pass
+
+    def super_breaks(self):
+        pass
+
+
+class PrototypeCar(SpecialCar):
+
+    def self_drive(self):
+        pass
+
+    def image_recognition(self):
+        pass
+
+    def _private_method(self):
+        pass
 
 # @UmlDecorator()
 class License:
@@ -114,6 +133,7 @@ class Bike:
 
     def __init__(self):
         self.speed = 0.0
+        self._production_id = 1234
         self.owner = None
         self.style = None
 

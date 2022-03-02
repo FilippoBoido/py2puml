@@ -95,14 +95,15 @@ def inspect_class_type(
     root_module_name: str,
     domain_items_by_fqn: Dict[str, UmlItem],
     domain_relations: List[UmlRelation],
-    methods: List[str]
+    methods: List[str],
+    hide_private_attributes
 ):
     attributes = inspect_static_attributes(
         class_type, class_type_fqn, root_module_name,
         domain_items_by_fqn, domain_relations,
         methods=methods
     )
-    instance_attributes, compositions = parse_class_constructor(class_type, class_type_fqn, root_module_name)
+    instance_attributes, compositions = parse_class_constructor(class_type, class_type_fqn, root_module_name,hide_private_attributes)
     attributes.extend(instance_attributes)
     domain_relations.extend(compositions.values())
 

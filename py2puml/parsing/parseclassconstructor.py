@@ -14,7 +14,8 @@ from py2puml.parsing.moduleresolver import ModuleResolver
 def parse_class_constructor(
     class_type: Type,
     class_fqn: str,
-    root_module_name: str
+    root_module_name: str,
+    hide_private_attributes
 ) -> Tuple[List[UmlAttribute], Dict[str, UmlRelation]]:
     constructor = getattr(class_type, '__init__', None)
     # conditions to meet in order to parse the AST of a constructor 
@@ -38,7 +39,7 @@ def parse_class_constructor(
 
     module_resolver = ModuleResolver(import_module(class_type.__module__))
 
-    visitor = ConstructorVisitor(constructor_source, class_type.__name__, root_module_name, module_resolver)
+    visitor = ConstructorVisitor(constructor_source, class_type.__name__, root_module_name, module_resolver, hide_private_attributes)
     visitor.visit(constructor_ast)
 
     return visitor.uml_attributes, visitor.uml_relations_by_target_fqn
