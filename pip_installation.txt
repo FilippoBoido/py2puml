@@ -1,0 +1,2 @@
+pip installation example for a specific branch, in this case "feature/method_inspection":
+pip install git+git://github.com/FilippoBoido/py2puml.git@feature/method_inspection
